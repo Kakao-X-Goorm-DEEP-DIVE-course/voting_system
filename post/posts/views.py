@@ -26,3 +26,15 @@ def post_create(request):
     else:
         form = PostForm()
     return render(request, 'posts/post_form.html', {'form': form})
+
+# 게시글 수정하는 뷰
+def post_update(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == "POST":
+        form = PostForm(request.POST, instance=post)
+        if form.is_valid():
+            form.save()
+            return redirect('post_detail', pk=post.pk)
+    else:
+        form = PostForm(instance=post)
+    return render(request, 'posts/post_form.html', {'form': form})
