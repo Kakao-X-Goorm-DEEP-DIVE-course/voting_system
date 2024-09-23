@@ -38,3 +38,11 @@ def post_update(request, pk):
     else:
         form = PostForm(instance=post)
     return render(request, 'posts/post_form.html', {'form': form})
+
+# 게시글 삭제하는 뷰
+def post_delete(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    if request.method == "POST":
+        post.delete()
+        return redirect('post_list')
+    return render(request, 'posts/post_confirm_delete.html', {'post': post})
