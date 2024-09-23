@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .models import Post
-from django.shortcuts import render, redirect
+from django.shortcuts import render,get_object_or_404, redirect
 from .forms import PostForm
 
 
@@ -46,3 +46,4 @@ def post_delete(request, pk):
         post.delete()
         return redirect('post_list')
     return render(request, 'posts/post_confirm_delete.html', {'post': post})
+
