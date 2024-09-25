@@ -1,49 +1,22 @@
-from django.shortcuts import render
+# posts/views.py
+
+from rest_framework import generics
 from .models import Post
-from django.shortcuts import render,get_object_or_404, redirect
-from .forms import PostForm
+from .serializers import PostSerializer
 
+# 게시글 목록 조회 및 생성 (GET, POST)
+class PostListCreateAPIView(generics.ListCreateAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
+# 게시글 세부 내용 조회, 수정 및 삭제 (GET, PATCH, DELETE)
+class PostRetrieveUpdateDestroyAPIView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Post.objects.all()
+    serializer_class = PostSerializer
 
-
-# 게시글 목록
-def post_list(request):
-    posts = Post.objects.all()
-    return render(request, 'posts/post_list.html', {'posts': posts})
-
-# 게시글 세부 내용
-def post_detail(request, pk):
-    post = Post.objects.get(pk=pk)
-    return render(request, 'posts/post_detail.html', {'post': post})
-
-# 게시글 생성하는 뷰
-def post_create(request):
-    if request.method == "POST":
-        form = PostForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('post_list')  # 게시글 목록으로 리다이렉트
-    else:
-        form = PostForm()
-    return render(request, 'posts/post_form.html', {'form': form})
-
-# 게시글 수정하는 뷰
-def post_update(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        form = PostForm(request.POST, instance=post)
-        if form.is_valid():
-            form.save()
-            return redirect('post_detail', pk=post.pk)
-    else:
-        form = PostForm(instance=post)
-    return render(request, 'posts/post_form.html', {'form': form})
-
-# 게시글 삭제하는 뷰
-def post_delete(request, pk):
-    post = get_object_or_404(Post, pk=pk)
-    if request.method == "POST":
-        post.delete()
-        return redirect('post_list')
-    return render(request, 'posts/post_confirm_delete.html', {'post': post})
-
+    # 404 에러 방지 및 커스텀 에러 메시지 처리
+    def get_object(self):
+        try:
+            return super().get_object()
+        except Post.DoesNotExist:
+            raise NotFound(detail="요청하신 게시글을 찾을 수 없습니다.", code=404)

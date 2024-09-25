@@ -1,10 +1,9 @@
+# posts/urls.py
+
 from django.urls import path
-from . import views
+from .views import PostListCreateAPIView, PostRetrieveUpdateDestroyAPIView
 
 urlpatterns = [
-    path('', views.post_list, name='post_list'),
-    path('<int:pk>/', views.post_detail, name='post_detail'),
-    path('create/', views.post_create, name='post_create'),
-    path('<int:pk>/edit/', views.post_update, name='post_update'),  
-    path('<int:pk>/delete/', views.post_delete, name='post_delete'),  
+    path('posts/', PostListCreateAPIView.as_view(), name='post-list-create'),  # 게시글 목록 조회 및 생성
+    path('posts/<int:pk>/', PostRetrieveUpdateDestroyAPIView.as_view(), name='post-detail'),  # 게시글 조회, 수정 및 삭제
 ]
