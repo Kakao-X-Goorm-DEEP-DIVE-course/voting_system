@@ -22,4 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),  # 루트 URL에 index 뷰를 연결
     path('post/<int:post_id>/', views.post_detail, name='post_detail'),  # 게시글 상세 페이지
+    
 ]
