@@ -14,7 +14,7 @@ class VoteListCreateView(generics.ListCreateAPIView):
 
         try:
             # Post 서비스에 post_id가 존재하는지 확인하는 API 호출
-            response = requests.get(f'http://localhost:8001/post/{post_id}/')
+            response = requests.get(f'http://192.168.64.7:8001/post/{post_id}/')
             
             if response.status_code != 200:
                 # 유효하지 않은 post_id일 경우 오류 응답
