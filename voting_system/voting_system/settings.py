@@ -40,7 +40,12 @@ pymysql.install_as_MySQLdb()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',  # 로컬에서 직접 접근할 때 사용
+    '127.0.0.1',  # 로컬 IP
+    'django',  # Docker Compose 내부에서 서비스 이름으로 접근할 때 사용
+    # 여기에 필요한 추가 호스트명을 추가할 수 있습니다.
+]
 
 
 # Application definition
