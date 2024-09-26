@@ -1,0 +1,6 @@
+Django>=4.2
+psycopg2>=2.9.3  # PostgreSQL 데이터베이스를 사용할 경우 필요
+django-prometheus>=2.1.0  # Prometheus 모니터링
+gunicorn>=20.1.0  # 프로덕션 환경 WSGI 서버
+pymysql>=1.0.2  # MySQL 데이터베이스와의 연동
+django-environ>=0.8.1  # 환경 변수 관리
