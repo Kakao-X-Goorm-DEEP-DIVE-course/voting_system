@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend:/app
+    ports:
+      - "3000:3000"
+    environment:
+      - CHOKIDAR_USEPOLLING=true  # Docker에서 파일 변경 감지 활성화
+
+  post-service:
+    build:
+      context: ./backend_post
+      dockerfile: Dockerfile
+    command: ["./wait-for-it.sh", "db", "3306", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./backend_post:/app  # 코드를 마운트하여 실시간 반영
+    ports:
+      - "8001:8000"  # 로컬에서 접속할 수 있도록 포트 매핑
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - vote-network
+  
+  vote-service:
+    build:
+      context: ./backend_vote
+      dockerfile: Dockerfile
+    command: ["./wait-for-it.sh", "db", "3306", "--", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./backend_vote:/app  # 코드를 마운트하여 실시간 반영
+    ports:
+      - "8002:8000"  # 로컬에서 접속할 수 있도록 포트 매핑
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks:
+      - vote-network
+  
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"  # Nginx가 80번 포트에서 요청을 받음
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf  # Nginx 설정 파일을 컨테이너로 복사
+    depends_on:
+      - post-service
+      - vote-service
+    networks:
+      - vote-network
+
+  db:
+    image: mysql:8.0
+    env_file:
+      - .env  # 데이터베이스 관련 환경 변수를 .env 파일로 관리
+    ports:
+      - "3307:3306"  # MySQL 포트 매핑
+    volumes:
+      - mysql_data:/var/lib/mysql  # 데이터베이스 볼륨 저장    
+    networks:
+      - vote-network
+        
+volumes:
+  mysql_data:  # MySQL 데이터가 저장될 볼륨
+
+networks:
+  vote-network:  # 공통 네트워크 설정
+    driver: bridge
