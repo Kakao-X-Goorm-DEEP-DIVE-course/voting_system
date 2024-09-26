@@ -1,0 +1,9 @@
+<!-- templates/posts/post_list.html -->
+<h1>임시 게시글 목록</h1>
+<ul>
+  {% for post in posts %}
+    <li>
+      <a href="{% url 'post_detail' post.pk %}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+</ul>
