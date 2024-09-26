@@ -21,6 +21,16 @@ from voting_system import views  # 방금 만든 뷰를 가져옵니다
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.index, name='index'),  # 루트 URL에 index 뷰를 연결
-    path('post/<int:post_id>/', views.post_detail, name='post_detail'),  # 게시글 상세 페이지
-    
+    path('post', views.post),
+    path('post/<int:post_id>', views.post_detail, name='post_detail'),  # 게시글 상세 페이지
 ]
+
+
+"""
+http method, status code
+
+/post -> 조회, 생성
+/post/{id} -> 한개 조회, 삭제, 
+
+(get, post, patch, delete)
+"""
